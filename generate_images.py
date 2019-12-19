@@ -46,6 +46,7 @@ if __name__ == "__main__":
                 batchX, batchY = image_crop_iterator.next()
                 img = Image.fromarray((batchX[0]*255).astype(np.uint8), 'RGB')
                 w, h = img.size
-                filename_crop = os.path.split(image_crop_iterator.filenames[i])[-1] + '_crop.jpg'
                 left, up, right, down = args.crop_dim
+                filename_crop = os.path.split(image_crop_iterator.filenames[i])[-1] + '_crop_' + str(left) + '_' + \
+                    str(up) + '_' + str(down) + '_' + str(right) + '.jpg'
                 img.crop((left, up, w - right, h - down)).save(os.path.join(args.output, filename_crop))
