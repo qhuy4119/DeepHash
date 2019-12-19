@@ -105,4 +105,4 @@ tflog/
 models/
 *.swp
 
-data
+data/*
