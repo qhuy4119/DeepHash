@@ -61,3 +61,4 @@ if __name__ == "__main__":
         files = files[:args.num]
     num_classes = count_num_classes(files)
     write_file(args.output, files, num_classes, args.prefix, args.num, args.log)
+    print('Num classes: ', num_classes)
