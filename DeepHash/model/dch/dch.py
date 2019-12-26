@@ -45,6 +45,7 @@ class DCH(object):
 
         # Create variables and placeholders
         self.img = tf.placeholder(tf.float32, [None, 256, 256, 3])
+        self.num_of_elems = 200000
         self.img_label = tf.placeholder(tf.float32, [None, self.label_dim])
         self.img_last_layer, self.deep_param_img, self.train_layers, self.train_last_layer = self.load_model()
 
@@ -81,7 +82,9 @@ class DCH(object):
         return
 
     def cauchy_cross_entropy(self, u, label_u, v=None, label_v=None, gamma=1, normed=True):
-
+        index_label_u = tf.reshape(label_u, [1, -1])
+        index_label_u = tf.squeeze(index_label_u)
+        onehot_label_u = tf.one_hot(index_label_u, self.num_of_elems, dtype=tf.int32)
         if v is None:
             v = u
             label_v = label_u
@@ -89,6 +92,8 @@ class DCH(object):
         label_ip = tf.cast(
             tf.matmul(label_u, tf.transpose(label_v)), tf.float32)
         s = tf.clip_by_value(label_ip, 0.0, 1.0)
+        
+
 
         if normed:
             ip_1 = tf.matmul(u, tf.transpose(v))
@@ -171,7 +176,6 @@ class DCH(object):
 
     def train(self, img_dataset):
         print("%s #train# start training" % datetime.now())
-
         # tensorboard
         tflog_path = os.path.join(self.log_dir, self.file_name)
         if os.path.exists(tflog_path):
