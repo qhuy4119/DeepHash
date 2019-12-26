@@ -85,6 +85,7 @@ class DCH(object):
         index_label_u = tf.reshape(label_u, [1, -1])
         index_label_u = tf.squeeze(index_label_u)
         onehot_label_u = tf.one_hot(index_label_u, self.num_of_elems, dtype=tf.int32)
+        label_u = onehot_label_u
         if v is None:
             v = u
             label_v = label_u
