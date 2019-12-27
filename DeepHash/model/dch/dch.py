@@ -39,8 +39,8 @@ class DCH(object):
         # Setup session
         print("launching session")
         configProto = tf.ConfigProto()
-        configProto.gpu_options.allow_growth = True
         configProto.allow_soft_placement = True
+        configProto.log_device_placement=True
         self.sess = tf.Session(config=configProto)
 
         # Create variables and placeholders
