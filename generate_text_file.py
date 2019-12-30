@@ -38,11 +38,13 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', help="specify the path of output file, including file name", default='train.txt')
     parser.add_argument('--log', help='specify path of log file', default='log.txt')
     parser.add_argument('--num', help='specify num of images', type=int)
+    parser.add_argument('--no-write', action='store_true')
     args = parser.parse_args()
     files = [f for f in listdir(args.d) if isfile(join(args.d, f))]
     files.sort()
     if args.num:
         files = files[:args.num]
     num_classes = count_num_classes(files)
-    write_file(args.output, files, num_classes, args.prefix, args.num, args.log)
+    if not args.no_write:
+        write_file(args.output, files, num_classes, args.prefix, args.num, args.log)
     print('Num classes: ', num_classes)
