@@ -1,7 +1,8 @@
 import numpy as np
 import logging 
+import os
 
-logging.basicConfig(level=logging.DEBUG, filename='~/batch.log', filemode='w')
+logging.basicConfig(level=logging.DEBUG, filename=os.path.expanduser('~/batch.log'), filemode='w')
 class Dataset(object):
     def __init__(self, dataset, output_dim, num_similar_pairs=None, class_size=None):
         print ("Initializing Dataset")

@@ -12,8 +12,8 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 parser = argparse.ArgumentParser(description='Triplet Hashing')
-parser.add_argument('n', help='specify the number of similar image pairs', type=int, dest='num_similar_pairs')
-parser.add_argument('c', help='specify the number of images in a class', type=int, dest='class_size')
+parser.add_argument('num_similar_pairs', help='specify the number of similar image pairs', type=int)
+parser.add_argument('class_size', help='specify the number of images in a class', type=int)
 parser.add_argument('--num-class', help="specify the number of classes", type=int, default=200000)
 parser.add_argument('--lr', '--learning-rate', default=0.005, type=float)
 parser.add_argument('--output-dim', default=64, type=int)   # 256, 128
