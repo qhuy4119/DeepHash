@@ -2,7 +2,7 @@ import numpy as np
 import logging 
 import os
 
-logging.basicConfig(level=logging.DEBUG, filename=os.path.expanduser('~/batch.log'), filemode='w')
+logging.basicConfig(level=logging.INFO, filename=os.path.expanduser('~/batch.log'), filemode='w')
 class Dataset(object):
     def __init__(self, dataset, output_dim, num_similar_pairs=None, class_size=None):
         print ("Initializing Dataset")
@@ -49,7 +49,7 @@ class Dataset(object):
 
         indexes = None
         if self._train:
-            indexes = self._perm[start: start + self.num_similar_pairs]
+            indexes = self._perm[start: end - self.num_similar_pairs]
             similar_images_indexes = self.get_similar_images_indexes(indexes, self.class_size)
             indexes = np.append(indexes, similar_images_indexes)
         else:
@@ -59,8 +59,8 @@ class Dataset(object):
         return (data, label)
 
     def get_similar_images_indexes(self, original_indexes, class_size: int):
-        similar_indexes = [0] * len(original_indexes)
-        for i in range(len(original_indexes)):
+        similar_indexes = [0] * self.num_similar_pairs
+        for i in range(self.num_similar_pairs):
             start = (original_indexes[i] // class_size) * class_size
             end = ((original_indexes[i] // class_size) + 1) * class_size
             while True:
