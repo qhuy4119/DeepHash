@@ -45,7 +45,7 @@ class DCH(object):
 
         # Create variables and placeholders
         self.img = tf.placeholder(tf.float32, [None, 256, 256, 3])
-        self.num_of_elems = 200000
+        self.num_of_elems = config.num_class
         self.img_label = tf.placeholder(tf.float32, [None, self.label_dim])
         self.img_last_layer, self.deep_param_img, self.train_layers, self.train_last_layer = self.load_model()
 
