@@ -48,3 +48,4 @@ if __name__ == "__main__":
     if not args.no_write:
         write_file(args.output, files, num_classes, args.prefix, args.num, args.log)
     print('Num classes: ', num_classes)
+    print('Num files:', len(files))
