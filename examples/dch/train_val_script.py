@@ -12,6 +12,9 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 parser = argparse.ArgumentParser(description='Triplet Hashing')
+parser.add_argument('n', help='specify the number of similar image pairs', type=int, dest='num_similar_pairs')
+parser.add_argument('c', help='specify the number of images in a class', type=int, dest='class_size')
+parser.add_argument('--num-class', help="specify the number of classes", type=int, default=200000)
 parser.add_argument('--lr', '--learning-rate', default=0.005, type=float)
 parser.add_argument('--output-dim', default=64, type=int)   # 256, 128
 parser.add_argument('--gamma', default=20, type=float)
@@ -39,6 +42,8 @@ parser.add_argument('--data-dir', default="~/data/", type=str)
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true')
 
 args = parser.parse_args()
+
+assert args.num_similar_pairs*2 <= args.batch_size, "Number of similar pairs cannot be bigger than batch_size"
 
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpus
 

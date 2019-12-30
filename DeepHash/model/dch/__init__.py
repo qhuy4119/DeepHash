@@ -5,7 +5,7 @@ def train(train_img, database_img, query_img, config):
     model = DCH(config)
     img_database = Dataset(database_img, config.output_dim)
     img_query = Dataset(query_img, config.output_dim)
-    img_train = Dataset(train_img, config.output_dim)
+    img_train = Dataset(train_img, config.output_dim, config.num_similar_pairs, config.class_size)
     model.train(img_train)
     return model.save_file
 

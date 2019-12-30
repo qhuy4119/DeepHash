@@ -1,12 +1,17 @@
 import numpy as np
+import logging 
 
+logging.basicConfig(level=logging.DEBUG, filename='~/batch.log', filemode='w')
 class Dataset(object):
-    def __init__(self, dataset, output_dim):
+    def __init__(self, dataset, output_dim, num_similar_pairs=None, class_size=None):
         print ("Initializing Dataset")
+        self.num_similar_pairs = num_similar_pairs
+        self.class_size = class_size
         self._dataset = dataset
         self.n_samples = dataset.n_samples
         self._train = dataset.train
         self._output = np.zeros((self.n_samples, output_dim), dtype=np.float32)
+        
 
         self._perm = np.arange(self.n_samples)
         np.random.shuffle(self._perm)
@@ -41,8 +46,28 @@ class Dataset(object):
                 self._index_in_epoch = self.n_samples
         end = self._index_in_epoch
 
-        data, label = self._dataset.data(self._perm[start:end])
+        indexes = None
+        if self._train:
+            indexes = self._perm[start: start + self.num_similar_pairs]
+            similar_images_indexes = self.get_similar_images_indexes(indexes, self.class_size)
+            indexes = np.append(indexes, similar_images_indexes)
+        else:
+            indexes = self._perm[start:end]
+        data, label = self._dataset.data(indexes)
+        logging.info('The labels in this batch: %s\n\n', str(label))
         return (data, label)
+
+    def get_similar_images_indexes(self, original_indexes, class_size: int):
+        similar_indexes = [0] * len(original_indexes)
+        for i in range(len(original_indexes)):
+            start = (original_indexes[i] // class_size) * class_size
+            end = ((original_indexes[i] // class_size) + 1) * class_size
+            while True:
+                num = np.random.randint(start, end) # generate random number in the half interval [start, end)
+                if num != original_indexes[i]:
+                    similar_indexes[i] = num  
+                    break  
+        return similar_indexes
 
     def feed_batch_output(self, batch_size, output):
         """
