@@ -41,7 +41,6 @@ class Dataset(object):
         self._load_num = 0
         self._status = 0
         self.data = self.img_data
-        self.all_data = self.img_all_data
 
     def get_img(self, i):
         path = os.path.join(self.data_root, self.lines[i].strip().split()[0])
@@ -51,37 +50,13 @@ class Dataset(object):
         return [int(j) for j in self.lines[i].strip().split()[1:]]
 
     def img_data(self, indexes):
-        if self._status:
-            return (self._img[indexes, :], self._label[indexes, :])
-        else:
-            ret_img = []
-            ret_label = []
-            for i in indexes:
-                try:
-                    if self.train:
-                        if not self._load[i]:
-                            self._img[i] = self.get_img(i)
-                            self._label[i] = self.get_label(i)
-                            self._load[i] = 1
-                            self._load_num += 1
-                        ret_img.append(self._img[i])
-                        ret_label.append(self._label[i])
-                    else:
-                        self._label[i] = self.get_label(i)
-                        ret_img.append(self.get_img(i))
-                        ret_label.append(self._label[i])
-                except Exception as e:
-                    print('cannot open {}, exception: {}'.format(self.lines[i].strip(), e))
-
-            if self._load_num == self.n_samples:
-                self._status = 1
-                self._img = np.asarray(self._img)
-                self._label = np.asarray(self._label)
-            return (np.asarray(ret_img), np.asarray(ret_label))
-
-    def img_all_data(self):
-        if self._status:
-            return (self._img, self._label)
+        ret_img = []
+        ret_label = []
+        for i in indexes:
+            self._label[i] = self.get_label(i)
+            ret_img.append(self.get_img(i))
+            ret_label.append(self._label[i])
+        return (np.asarray(ret_img), np.asarray(ret_label))
 
     def get_labels(self):
         for i in range(self.n_samples):
