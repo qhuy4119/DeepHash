@@ -47,7 +47,7 @@ assert args.num_similar_pairs*2 <= args.batch_size, "Number of similar pairs can
 
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpus
 
-label_dims = {'cifar10': 10, 'cub': 200, 'nuswide_81': 81, 'coco': 80, 'train': args.num_class}
+label_dims = {'cifar10': 10, 'cub': 200, 'nuswide_81': 81, 'coco': 80, 'train': 1}
 Rs = {'cifar10': 54000, 'nuswide_81': 5000, 'coco': 5000, 'train': 5000}
 args.R = Rs[args.dataset]
 args.label_dim = label_dims[args.dataset]
