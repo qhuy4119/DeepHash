@@ -62,7 +62,7 @@ class Dataset(object):
         similar_indexes = [0] * self.num_similar_pairs
         for i in range(self.num_similar_pairs):
             start = (original_indexes[i] // class_size) * class_size
-            end = ((original_indexes[i] // class_size) + 1) * class_size
+            end = min(self.n_samples, ((original_indexes[i] // class_size) + 1) * class_size)
             while True:
                 num = np.random.randint(start, end) # generate random number in the half interval [start, end)
                 if num != original_indexes[i]:
