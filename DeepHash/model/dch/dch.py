@@ -81,10 +81,11 @@ class DCH(object):
         return
 
     def cauchy_cross_entropy(self, u, label_u, v=None, label_v=None, gamma=1, normed=True):
-        index_label_u = tf.reshape(label_u, [1, -1])
-        index_label_u = tf.squeeze(index_label_u)
-        onehot_label_u = tf.one_hot(index_label_u, self.num_of_elems, dtype=tf.int32)
-        label_u = onehot_label_u
+        if self.use_custom_dataset:
+            index_label_u = tf.reshape(label_u, [1, -1])
+            index_label_u = tf.squeeze(index_label_u)
+            onehot_label_u = tf.one_hot(index_label_u, self.num_of_elems, dtype=tf.int32)
+            label_u = onehot_label_u
         if v is None:
             v = u
             label_v = label_u
@@ -93,8 +94,6 @@ class DCH(object):
             tf.matmul(label_u, tf.transpose(label_v)), tf.float32)
         s = tf.clip_by_value(label_ip, 0.0, 1.0)
         
-
-
         if normed:
             ip_1 = tf.matmul(u, tf.transpose(v))
 
