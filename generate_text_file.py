@@ -4,6 +4,7 @@ from os.path import isfile, join
 import argparse
 import logging
 from collections import defaultdict
+from tqdm import tqdm
 
 
 def count_num_classes(fileList):
@@ -21,7 +22,7 @@ def write_file(filePath, fileList, num_classes, prefix, num, logFile='log.txt'):
             origin_file = f.split("_")[0]
             d[origin_file].append(f)
         current_num_of_lines = 0
-        for index, key in enumerate(d):
+        for index, key in tqdm(enumerate(d)):
             for filename in d[key]:
                 if num and index >= num:
                     return
@@ -38,14 +39,16 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', help="specify the path of output file, including file name", default='train.txt')
     parser.add_argument('--log', help='specify path of log file', default='log.txt')
     parser.add_argument('--num', help='specify num of images', type=int)
-    parser.add_argument('--no-write', action='store_true')
+    parser.add_argument('--query', action='store_true')
     args = parser.parse_args()
     files = [f for f in listdir(args.d) if isfile(join(args.d, f))]
     files.sort()
     if args.num:
         files = files[:args.num]
     num_classes = count_num_classes(files)
-    if not args.no_write:
+    if not args.query:
+        print("Start writing file %s" % args.output)
         write_file(args.output, files, num_classes, args.prefix, args.num, args.log)
+        print("Finished writing file")
     print('Num classes: ', num_classes)
     print('Num files:', len(files))

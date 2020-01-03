@@ -218,7 +218,11 @@ class DCH(object):
                                                     self.stage: 1})
             img_query.feed_batch_output(self.val_batch_size, output)
             print('Cosine Loss: %s' % loss)
-
+        if self.encode:
+            print('Saving hash codes of images to %s' % self.encode)
+            np.save(self.encode, img_query.output)
+            print('Finished saving file')
+            raise SystemExit
         database_batch = int(ceil(img_database.n_samples / float(self.val_batch_size)))
         img_database.finish_epoch()
         print("%s #validation# totally %d database in %d batches" %

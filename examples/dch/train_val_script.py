@@ -15,6 +15,7 @@ parser = argparse.ArgumentParser(description='Triplet Hashing')
 parser.add_argument('num_similar_pairs', help='specify the number of similar image pairs', type=int)
 parser.add_argument('class_size', help='specify the number of images in a class', type=int)
 parser.add_argument('--num-class', help="specify the number of classes", type=int, default=200000)
+parser.add_argument('--encode', help="specify the file path to save hash codes of test images")
 parser.add_argument('--lr', '--learning-rate', default=0.005, type=float)
 parser.add_argument('--output-dim', default=64, type=int)   # 256, 128
 parser.add_argument('--gamma', default=20, type=float)
