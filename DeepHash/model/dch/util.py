@@ -54,6 +54,7 @@ class Dataset(object):
             indexes = np.append(indexes, similar_images_indexes)
         else:
             indexes = self._perm[start:end]
+        indexes = indexes.astype(int)
         data, label = self._dataset.data(indexes)
         logging.info('The labels in this batch: %s\n\n', str(label))
         return (data, label)
