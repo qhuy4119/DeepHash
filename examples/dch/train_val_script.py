@@ -46,7 +46,7 @@ parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true')
 
 args = parser.parse_args()
 
-assert args.num_similar_pairs*2 < args.batch_size, "Number of similar pairs cannot be bigger than batch_size"
+assert args.num_similar_pairs*2 <= args.batch_size, "Number of similar pairs cannot be bigger than batch_size"
 
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpus
 
