@@ -194,12 +194,15 @@ class DCH(object):
             img_dataset.feed_batch_output(self.batch_size, output)
             duration = time.time() - start_time
 
-            if train_iter % 100 == 0:
+            if train_iter % 10 == 0:
                 print("%s #train# step %4d, loss = %.4f, cross_entropy loss = %.4f, %.1f sec/batch"
                       % (datetime.now(), train_iter+1, loss, cos_loss, duration))
+            if train_iter % 100 == 0:
+                print("saving model at iter ", train_iter+1)
+                self.save_model()
 
         print("%s #traing# finish training" % datetime.now())
-        self.save_model()
+ 
         print("model saved")
 
         self.sess.close()
