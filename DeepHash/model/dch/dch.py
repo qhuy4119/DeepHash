@@ -16,6 +16,9 @@ import tensorflow as tf
 import model.plot as plot
 from architecture import img_alexnet_layers
 from evaluation import MAPs
+import sys
+sys.path.append('../..')
+from util import sign
 
 
 class DCH(object):
@@ -222,7 +225,7 @@ class DCH(object):
             print('Cosine Loss: %s' % loss)
         if self.encode:
             print('Saving hash codes of images to %s' % self.encode)
-            np.save(self.encode, img_query.output)
+            np.save(self.encode, sign(img_query.output))
             print('Finished saving file')
             raise SystemExit
         database_batch = int(ceil(img_database.n_samples / float(self.val_batch_size)))
