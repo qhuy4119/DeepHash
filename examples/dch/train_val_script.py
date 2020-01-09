@@ -5,6 +5,12 @@ import model.dch as model
 import data_provider.image as dataset
 
 from pprint import pprint
+# import subprocess
+
+# def print_num_of_lines_in_files(fileList):
+#     for file in fileList:
+#     num_of_lines = subprocess.run(('wc -l ' + str(file)).split(), capture_output=True, text=True).stdout.split()[0]
+#     print(file + ' has ' + num_of_lines + ' lines')
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -12,10 +18,10 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 parser = argparse.ArgumentParser(description='Triplet Hashing')
-parser.add_argument('--num_similar_pairs', help="specify the number of similar image pairs. \
+parser.add_argument('--num-similar-pairs', help="specify the number of similar image pairs. \
                                 Default is 0, which doesn't mean 0 similar pairs. Rather, it means batches will be drawn randomly", \
                         type=int, default=0)
-parser.add_argument('--class_size', help='specify the number of images in a class', type=int, default=4)
+parser.add_argument('--class-size', help='specify the number of images in a class', type=int, default=4)
 parser.add_argument('--num-class', help="specify the number of classes", type=int, default=200000)
 parser.add_argument('--encode', help="specify the file path to save hash codes of test images")
 parser.add_argument('--lr', '--learning-rate', default=0.005, type=float)
@@ -63,7 +69,7 @@ args.img_te = os.path.join(args.data_dir, args.dataset, "test.txt")
 args.img_db = os.path.join(args.data_dir, args.dataset, "database.txt")
 
 pprint(vars(args))
-
+# print_num_of_lines_in_files([args.img_tr, args.img_te, args.img_db])
 data_root = os.path.join(args.data_dir, args.dataset)
 query_img, database_img = dataset.import_validation(data_root, args.img_te, args.img_db)
 
