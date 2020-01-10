@@ -6,20 +6,24 @@ import imageio
 from tqdm import trange
 from PIL import Image
 import numpy as np
+import subprocess
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('input', help='directory of input images')
+    parser.add_argument('input', help='directory of input images (keras ImageDataGeenrator format)')
     parser.add_argument('output', help='directory of output images')
     parser.add_argument('--size', help='size of input and output images', nargs=2, type=int, default=[300, 300])
     parser.add_argument('-n', help='number of augmented images for each original image', type=int, default=1)
     parser.add_argument('--no-keras', help="will not generate images augmented by keras", action='store_true')
+    parser.add_argument('--no-pil-task', help="will not do any tasks other than keras", action='store_true')
     parser.add_argument('--no-crop', help="will not generate cropped images", action='store_true')
     parser.add_argument('--no-rotate', help='will not generate rotated images', action='store_true')
     parser.add_argument('--crop-dim', help="specify 4 values: left, upper, right, lower according to PIL.Image.crop()", nargs=4, \
                                     type=int, default=[10, 10, 10, 10])
     parser.add_argument('--rotate', help="specify the angle to rotate in degrees counter clockwise. Default is 10", type=int, \
                                         default=10)
+    parser.add_argument('--text-file', help='use the generate_text_file.py module to create a text file. Take 1 argument:\
+                                        the name of the file')
     args = parser.parse_args()
     IMG_SIZE = (args.size[0], args.size[1])
     image_keras_generator = ImageDataGenerator(   rescale=(1/255),
@@ -45,15 +49,21 @@ if __name__ == "__main__":
                 img = (batchX[0]*255).astype(np.uint8)
                 imageio.imwrite(os.path.join(args.output, filename), img)
 
-            batchX, batchY = image_PIL_tasks_iterator.next()
-            img = Image.fromarray((batchX[0]*255).astype(np.uint8), 'RGB')
-            if not args.no_crop:                    
-                w, h = img.size
-                left, up, right, down = args.crop_dim
-                save_filename = os.path.split(image_PIL_tasks_iterator.filenames[i])[-1] + '_crop_' + str(left) + '_' + \
-                    str(up) + '_' + str(down) + '_' + str(right) + '.jpg'
-                img.crop((left, up, w - right, h - down)).save(os.path.join(args.output, save_filename))
-            if not args.no_rotate:
-                save_filename = os.path.split(image_PIL_tasks_iterator.filenames[i])[-1] + '_rotate_' + str(args.rotate) + '.jpg'
-                img.rotate(args.rotate, expand=True).save(os.path.join(args.output, save_filename))
+            if not args.no_pil_task:
+                batchX, batchY = image_PIL_tasks_iterator.next()
+                img = Image.fromarray((batchX[0]*255).astype(np.uint8), 'RGB')
+                if not args.no_crop:                    
+                    w, h = img.size
+                    left, up, right, down = args.crop_dim
+                    save_filename = os.path.split(image_PIL_tasks_iterator.filenames[i])[-1] + '_crop_' + str(left) + '_' + \
+                        str(up) + '_' + str(down) + '_' + str(right) + '.jpg'
+                    img.crop((left, up, w - right, h - down)).save(os.path.join(args.output, save_filename))
+                if not args.no_rotate:
+                    save_filename = os.path.split(image_PIL_tasks_iterator.filenames[i])[-1] + '_rotate_' + str(args.rotate) + '.jpg'
+                    img.rotate(args.rotate, expand=True).save(os.path.join(args.output, save_filename))
 
+    if args.text_file:
+        output_path = os.path.join(args.input, args.text_file)
+        prefix = os.path.split(args.output)[-1]
+        command = "python generate_text_file.py {d} -o {o} --prefix {p}".format(d=args.output, o=output_path, p=prefix)
+        subprocess.run(command.split())
