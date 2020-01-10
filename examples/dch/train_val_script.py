@@ -23,17 +23,24 @@ parser.add_argument('--num-similar-pairs', help="specify the number of similar i
                         type=int, default=0)
 parser.add_argument('--class-size', help='specify the number of images in a class', type=int, default=4)
 parser.add_argument('--num-class', help="specify the number of classes", type=int, default=200000)
-parser.add_argument('--encode', help="specify the file path to save hash codes of test images")
-parser.add_argument('--lr', '--learning-rate', default=0.005, type=float)
-parser.add_argument('--output-dim', default=64, type=int)   # 256, 128
-parser.add_argument('--gamma', default=20, type=float)
 parser.add_argument('--iter-num', default=2000, type=int)
-parser.add_argument('--q-lambda', default=0, type=float)
+parser.add_argument('--encode', help="specify the file path to save hash codes of test images")
+parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true')
+parser.add_argument('--data-dir', default="~/data/", type=str)
 parser.add_argument('--dataset', default='cifar10', type=str)
-parser.add_argument('--gpus', default='0', type=str)
+parser.add_argument('--output-dim', default=64, type=int)   # 256, 128
 parser.add_argument('--log-dir', default='tflog', type=str)
 parser.add_argument('-b', '--batch-size', default=128, type=int)
 parser.add_argument('-vb', '--val-batch-size', default=16, type=int)
+parser.add_argument('--model-weights', type=str,
+                    default='../../DeepHash/architecture/pretrained_model/reference_pretrain.npy')
+parser.add_argument('--save-dir', default="./models/", type=str)
+parser.add_argument('--img-model', default='alexnet', type=str)
+
+parser.add_argument('--lr', '--learning-rate', default=0.005, type=float)
+parser.add_argument('--gamma', default=20, type=float)
+parser.add_argument('--q-lambda', default=0, type=float)
+parser.add_argument('--gpus', default='0', type=str)
 parser.add_argument('--decay-step', default=10000, type=int)
 parser.add_argument('--decay-factor', default=0.1, type=float)
 
@@ -42,17 +49,12 @@ tanh_parser.add_argument('--with-tanh', dest='with_tanh', action='store_true')
 tanh_parser.add_argument('--without-tanh', dest='with_tanh', action='store_false')
 parser.set_defaults(with_tanh=True)
 
-parser.add_argument('--img-model', default='alexnet', type=str)
-parser.add_argument('--model-weights', type=str,
-                    default='../../DeepHash/architecture/pretrained_model/reference_pretrain.npy')
 parser.add_argument('--finetune-all', default=True, type=bool)
-parser.add_argument('--save-dir', default="./models/", type=str)
-parser.add_argument('--data-dir', default="~/data/", type=str)
-parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true')
 
 args = parser.parse_args()
 
 assert args.num_similar_pairs*2 <= args.batch_size, "Number of similar pairs cannot be bigger than batch_size"
+if args.encode: args.evaluate = True
 
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpus
 
