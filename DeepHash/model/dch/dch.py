@@ -37,8 +37,10 @@ class DCH(object):
             self.q_lambda,
             self.gamma,
             self.dataset)
-        self.save_file = os.path.join(self.save_dir, self.file_name + '.npy')
-
+        self.num_model_files = config.num_model_files
+        self.current_model_file_index = 0
+        
+        
         # Setup session
         print("launching session")
         configProto = tf.ConfigProto()
@@ -70,7 +72,10 @@ class DCH(object):
             raise Exception('cannot use such CNN model as ' + self.img_model)
         return img_output
 
-    def save_model(self, model_file=None):
+    def save_model(self, model_file=None, is_last_iter=False):
+        self.save_file = os.path.join(self.save_dir, self.file_name + '_' + str(self.current_model_file_index) + '.npy')
+        if is_last_iter:
+            self.save_file = os.path.join(self.save_dir, self.file_name + '_lastIter' + '.npy')
         if model_file is None:
             model_file = self.save_file
         model = {}
@@ -81,6 +86,7 @@ class DCH(object):
             os.makedirs(self.save_dir)
 
         np.save(model_file, np.array(model))
+        self.current_model_file_index += 1
         return
 
     def cauchy_cross_entropy(self, u, label_u, v=None, label_v=None, gamma=1, normed=True):
@@ -200,9 +206,14 @@ class DCH(object):
             if train_iter % 10 == 0:
                 print("%s #train# step %4d, loss = %.4f, cross_entropy loss = %.4f, %.1f sec/batch"
                       % (datetime.now(), train_iter+1, loss, cos_loss, duration))
-            if train_iter % 100 == 0:
+            if (train_iter >= 500) and (train_iter % 100 < self.num_model_files):
                 print("saving model at iter ", train_iter+1)
                 self.save_model()
+                if self.current_model_file_index >= self.num_model_files:
+                    self.current_model_file_index = 0
+            elif train_iter == self.iter_num -1:
+                print("saving model at iter ", train_iter+1)
+                self.save_model(is_last_iter=True)
 
         print("%s #traing# finish training" % datetime.now())
  

@@ -5,12 +5,12 @@ import model.dch as model
 import data_provider.image as dataset
 
 from pprint import pprint
-# import subprocess
+import subprocess
 
-# def print_num_of_lines_in_files(fileList):
-#     for file in fileList:
-#     num_of_lines = subprocess.run(('wc -l ' + str(file)).split(), capture_output=True, text=True).stdout.split()[0]
-#     print(file + ' has ' + num_of_lines + ' lines')
+def print_num_of_lines_in_files(fileList):
+    for file in fileList:
+        num_of_lines = subprocess.run(('wc -l ' + str(file)).split(), stdout=subprocess.PIPE, universal_newlines=True).stdout.split()[0]
+        print(file + ' has ' + num_of_lines + ' lines')
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -36,6 +36,7 @@ parser.add_argument('--model-weights', type=str,
                     default='../../DeepHash/architecture/pretrained_model/reference_pretrain.npy')
 parser.add_argument('--save-dir', default="./models/", type=str)
 parser.add_argument('--img-model', default='alexnet', type=str)
+parser.add_argument('--num-model-files', help='number of model files to be saved each time', type=int, default= 3)
 
 parser.add_argument('--lr', '--learning-rate', default=0.005, type=float)
 parser.add_argument('--gamma', default=20, type=float)
@@ -71,7 +72,7 @@ args.img_te = os.path.join(args.data_dir, args.dataset, "test.txt")
 args.img_db = os.path.join(args.data_dir, args.dataset, "database.txt")
 
 pprint(vars(args))
-# print_num_of_lines_in_files([args.img_tr, args.img_te, args.img_db])
+print_num_of_lines_in_files([args.img_tr, args.img_te, args.img_db])
 data_root = os.path.join(args.data_dir, args.dataset)
 query_img, database_img = dataset.import_validation(data_root, args.img_te, args.img_db)
 
